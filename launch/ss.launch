@@ -1,0 +1,57 @@
+<launch>
+
+	<node name="rosplay" pkg="rosbag" type="play" args="/home/ycc/xy/886.bag --clock"/>
+
+	<!--node pkg="vo_flow" type="template_match_flow_node" name="template_match_flow_node" output="screen">
+		<param name="image_topic" value="/usb_cam/image_rect"/>
+		<param name="have_pixhawk" value="true"/>
+	</node-->
+
+	<!--node pkg="vo_flow" type="sparse_flow_node" name="sparse_flow_node" output="screen">
+		<param name="image_topic" value="/usb_cam/image_rect"/>
+		<param name="have_pixhawk" value="true"/>
+	</node-->
+	<!--node pkg="vo_flow" type="ultrasonic_data_node" name="ultrasonic_data_node" output="screen"/-->
+
+	<!--cmd_vel(USB0)   mavros(USB1)   px4flow_serial(USB2)-->
+	<!--include file="$(find mavros)/launch/px4.launch"/-->                                    <!--mavros-->
+
+	<!--node pkg="vo_flow" type="px4flow_uart_node" name="px4flow_uart_node" output="screen">
+	  <param name="flow_serial_port" type="string" value="/dev/ttyUSB2"/>
+  </node-->
+<!--node pkg="optitrack_driver" type="optitrack_driver_node" name="optitrack_driver_node" output="screen" required="true" /-->
+	<!--include file="$(find usb_cam)/launch/usb_cam.launch" >
+		<param name="video_device" value="/dev/video0" />
+		<param name="framerate" value="30" />
+		<param name="image_width" value="640" />
+		<param name="image_height" value="480" />
+		<param name="camera_info_url" type="string" value="file://$(find usb_cam)/130.yaml"/>
+	</include-->
+
+	<!--doc="200 for 90,NaN for 130"-->
+	<!--node pkg="vo_flow" type="sparse_flow_node" name="sparse_flow_node" output="screen" >
+		<param name="image_topic" value="/usb_cam/image_rect"/>
+		<param name="have_pixhawk" value="true"/>
+		<param name="focus" value="160" />
+		<param name="point_num" value="25" />
+	</node-->
+
+	<!--doc="200 for 90,NaN for 130"-->
+	<!--node pkg="vo_flow" type="template_match_flow_node" name="template_match_flow_node" output="screen" >
+		<param name="image_topic" value="/usb_cam/image_rect"/>
+		<param name="have_pixhawk" value="true"/>
+		<param name="focus" value="160" />
+		<param name="point_num" value="25" />
+	</node-->
+
+	<node pkg="vo_flow" type="path_coodinate_flow_node" name="path_coodinate_flow_node" output="screen">
+		<param name="flow_topic" value="/vo_flow/template_match/opt_flow"/>
+	</node>
+
+	<node pkg="vo_flow" type="imu_flow_fusion_node" name="imu_flow_fusion_node" output="screen"/>
+
+
+	<!--/vo_flow/template_match/opt_flow    /serial_flow_msg   /vo_flow/sparse_flow/opt_flow -->
+
+	<node pkg="rviz" type="rviz" name="rviz" output="screen"/>
+</launch>
